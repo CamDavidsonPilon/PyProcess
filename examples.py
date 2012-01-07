@@ -1,5 +1,5 @@
 import math
-import StochasticProcesses as SP
+import pyprocess as SP
 import scipy.stats as stats 
 
 #lets create a Wiener process conditioned at an end position (Brownian Bridge) 
