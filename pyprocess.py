@@ -199,7 +199,7 @@ class Renewal_process(Step_process):
         return x
             
 class Poisson_process(Renewal_process):
-       """
+    """
     The Poisson process defined by 
     $$N(t) = \\text{Poisson}(\\text{rate} * t)$$
     
@@ -478,7 +478,7 @@ class Wiener_process(Diffusion_process):
     
     """
     
- def __init__(self, parameters, time_space_constraints):
+    def __init__(self, parameters, time_space_constraints):
         super(Wiener_process,self).__init__(time_space_constraints)
         for p in parameters:
             setattr(self,p,parameters[p])
@@ -628,7 +628,7 @@ class Integrated_OU_process(Diffusion_process):
     
     modified from http://www.fisica.uniud.it/~milotti/DidatticaTS/Segnali/Gillespie_1996.pdf
     """
-   def __init__(self, parameters, time_space_constraints):
+    def __init__(self, parameters, time_space_constraints):
         super(Integrated_OU_process,self).__init__( time_space_constraints)
         self.OU = OU_process({"theta":parameters["theta"], "mu":parameters["mu"], "sigma":parameters["sigma"]}, {"startTime":time_space_constraints["startTime"], "startPosition":parameters["x0"]})
         for p in parameters:

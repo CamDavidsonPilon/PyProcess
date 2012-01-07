@@ -10,6 +10,7 @@ Wiener = SP.Wiener_process(wienerParams, wienerInitial)
 
 #Get the mean and variance at time=10
 t=10
+
 print Wiener.get_mean_at(t)
 print Wiener.get_variance_at(t)
 print
@@ -43,7 +44,7 @@ print Custom.generate_position_at(10)
 
 
 #Lets create a process which can be seperated into the sum of a CEV diffusion and Compound Poisson jump process.
-#First the GBM Process
+#First the CEV Process
 CEVParams = {"r":0.002, "delta":0.5, "beta":-0.3}
 CEVInitial = {"startTime":0, "startPosition":100}
 CEV = SP.CEV_process(CEVParams, CEVInitial)
@@ -51,7 +52,7 @@ CEV = SP.CEV_process(CEVParams, CEVInitial)
 #Next the Compound Process. The jumps are Normal random variables, so lets create a "frozen" scipy.stats random variable. 
 #Frozen just means that the parameters are fixed upon construction of the random variable.
 
-Nor = stats.norm(-0.2,0.05) #This is the mean and standard deviation.
+Nor = stats.norm(-0.2,0.05) #The parameters represent the mean and standard deviation.
 rate = 0.1 #This is the jump rate, often denoted lambda in literature.
 CPoiParams = {"J":Nor, "rate":rate}
 CPoiInitial = {"startTime":0, "startPosition":0}
