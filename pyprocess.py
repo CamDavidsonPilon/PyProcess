@@ -153,11 +153,14 @@ class Renewal_process(Step_process):
             if t<tao:
                 path.append((t,x))
             else:
-                while t>tao and count<N-1: 
+                while t>tao and count <= N-1:
+                    x = pathOfJumps[count][1]                        
                     count+=1
-                    tao=pathOfJumps[count][0]
-                    x = pathOfJumps[count][1]
-                
+                    try:
+                        tao=pathOfJumps[count][0]
+                    except:                   
+                        x = pathOfJumps[-1][1]
+                        
                 path.append((t,x))
         return path
         
@@ -196,10 +199,13 @@ class Renewal_process(Step_process):
         return x
             
 class Poisson_process(Renewal_process):
-    """
-    This class creates the Poisson process defined by N(t) being distributed according to a poisson distribution. 
+       """
+    The Poisson process defined by 
+    $$N(t) = \\text{Poisson}(\\text{rate} * t)$$
+    
     parameters:
-    $\{'rate': \text{scalar}>0\}$
+    $$\{\\text{rate}: \\text{scalar}>0 \}$$
+    
     """
     
     def __init__(self,parameters,time_space_constraints):
@@ -214,9 +220,9 @@ class Poisson_process(Renewal_process):
     def _get_mean_at(self,t):
         #recall that a conditional poisson process N_t | N_T=n ~ Bin(n, t/T)
         if not self.conditional:  
-            return self.startPosition + self.rate*(t-self.startTime)
+			return self.startPosition + self.rate*(t-self.startTime)
         else:
-            return self.endPosition*float(t)/self.endTime
+			return self.endPosition*float(t)/self.endTime
     
     def _get_variance_at(self,t):
         if self.conditional:
@@ -244,7 +250,6 @@ class Poisson_process(Renewal_process):
             return self.Bin.rvs(self.endPosition-self.startPosition, float(t)/self.endTime)+self.startPosition
         else:
             return self.Poi.rvs(self.rate*(t-self.startTime))+self.startPosition
-
 class Marked_poisson_process(Renewal_process):
     """
     This class constructs marked poisson process ie at exponentially distributed times, a 
@@ -473,7 +478,7 @@ class Wiener_process(Diffusion_process):
     
     """
     
-    def __init__(self, parameters, time_space_constraints):
+ def __init__(self, parameters, time_space_constraints):
         super(Wiener_process,self).__init__(time_space_constraints)
         for p in parameters:
             setattr(self,p,parameters[p])
@@ -532,9 +537,9 @@ class Wiener_process(Diffusion_process):
         pass
     
     def _process2latex(self):
-        """This function will return a string that shows a latex representation of the inputed parameters."""
-        return  "$dW_t = %.3fdt + %.3fdB_t$"%(self.mu, self.sigma)
-    
+		"""This function will return a string that shows a latex representation of the inputed parameters."""
+		return  "$dW_t = %.3fdt + %.3fdB_t$"%(self.mu, self.sigma)
+        
     
 class OU_process(Diffusion_process):
     
@@ -607,10 +612,10 @@ class OU_process(Diffusion_process):
         else:
             path = bridge_creation(self,times)
             return path
+		
+	def _process2latex(self):
+			return "dOU_t = %.3f(%.3f-OU_t)dt + %.3fdB_t$"%(self.theta, self.mu, self.sigma)
         
-    def _process2latex(self):
-            return "dOU_t = %.3f(%.3f-OU_t)dt + %.3fdB_t$"%(self.theta, self.mu, self.sigma)
-    
 class Integrated_OU_process(Diffusion_process):
     """
     The time-integrated Orstein-Uhlenbeck process
@@ -623,7 +628,7 @@ class Integrated_OU_process(Diffusion_process):
     
     modified from http://www.fisica.uniud.it/~milotti/DidatticaTS/Segnali/Gillespie_1996.pdf
     """
-    def __init__(self, parameters, time_space_constraints):
+   def __init__(self, parameters, time_space_constraints):
         super(Integrated_OU_process,self).__init__( time_space_constraints)
         self.OU = OU_process({"theta":parameters["theta"], "mu":parameters["mu"], "sigma":parameters["sigma"]}, {"startTime":time_space_constraints["startTime"], "startPosition":parameters["x0"]})
         for p in parameters:
@@ -689,13 +694,13 @@ class Integrated_OU_process(Diffusion_process):
                return path
            else:
                return path, xPath 
-        
-    def _process2latex(self):
+		
+	def _process2latex(self):
 
-        return """$IOU_t = IOU_0 + \int_0^t OU_s ds
-            \text{where} dOU_t = %.3f(%.3f-OU_t)dt + %.3fdB_t, 
-            OU_0 = x0 
-            """ %(self.theta, self.mu, self.sigma)
+		return """$IOU_t = IOU_0 + \int_0^t OU_s ds
+			\text{where} dOU_t = %.3f(%.3f-OU_t)dt + %.3fdB_t, 
+			OU_0 = x0 
+			""" %(self.theta, self.mu, self.sigma)
            
 class SqBessel_process(Diffusion_process):
     """
@@ -737,12 +742,12 @@ class SqBessel_process(Diffusion_process):
             self.InGamma = IncompleteGamma
             
     def _process2latex(self):
-        #lambda0 and nu must be defined.
-        return
-        """
-        $dX_t = %.3fdt + %.3f \sqrt{X_t} dB_t 
-        """%(self.lambda0, self.nu)
-    
+		#lambda0 and nu must be defined.
+		return
+		"""
+		$dX_t = %.3fdt + %.3f \sqrt{X_t} dB_t 
+		"""%(self.lambda0, self.nu)
+	
     def generate_sample_path(self,times,absb=0):
         """
         absb is a boolean, true if absorbtion at 0, false else. See class' __doc__ for when 
@@ -758,12 +763,12 @@ class SqBessel_process(Diffusion_process):
         try:
             return (y/x)**(0.5*self.mu)*exp(-0.5*(x+y)/self.nu**2/t)/(0.5*self.nu**2*t)*iv(abs(self.mu),4*sqrt(x*y)/(self.nu**2*t))
         except AttributeError:
-            print "Attn: nu must be known and defined to calculate the transition pdf."
+           pass # print "Attn: nu must be known and defined to calculate the transition pdf."
             
     def _generate_sample_path_no_absorption(self, times):
         "mu must be greater than -1. The parameter times is a list of times to sample at."
         if self.mu<=-1:
-            print "Attn: mu must be greater than -1. It is currently %f."%self.mu
+            #print "Attn: mu must be greater than -1. It is currently %f."%self.mu
             return
         else:
             if not self.conditional:
@@ -789,7 +794,7 @@ class SqBessel_process(Diffusion_process):
     def _generate_sample_path_with_absorption(self,times):
         "mu must be less than 0."
         if self.mu>=0:
-            print "Attn: mu must be less than 0. It is currently %f."%self.mu
+            pass #print "Attn: mu must be less than 0. It is currently %f."%self.mu
         else:
             if not self.conditional:
                 path=[]
@@ -822,7 +827,7 @@ class SqBessel_process(Diffusion_process):
     def generate_sample_FHT_bridge(self,times):
         "mu must be less than 0. This process has absorption at L=0. It simulates the absorption at 0 at some random time, tao, and creates a bridge process."
         if self.mu>0:
-            print "mu must be less than 0. It is currently %f."%self.mu
+           pass#  print "mu must be less than 0. It is currently %f."%self.mu
         else:
             X=self.startPosition
             t=self.t_0
@@ -878,10 +883,10 @@ class CIR_process(Diffusion_process):
         self.mu=self.SqB.mu
     
     def _process2latex(self):
-        return """
-        $dCIR_t = (%.3f - %.3fCIR_t)dt + %.3f\sqrt(CIR_t)dB_t$
-        """%(self.lambda_0, self.lambda_1, self.nu)
-        
+		return """
+		$dCIR_t = (%.3f - %.3fCIR_t)dt + %.3f\sqrt(CIR_t)dB_t$
+		"""%(self.lambda_0, self.lambda_1, self.nu)
+		
     def _transition_pdf(self,x,t,y):
         return exp(self.lambda_1*t)*SqB._transition_pdf(x,self._time_transformation(t), exp(self.lambda_1*t)*y)
     
@@ -920,10 +925,16 @@ class CIR_process(Diffusion_process):
             return log(self.lambda_1*t+1)/self.lambda_1
             
     def _get_mean_at(self,t):
-        pass
-    
+        if not self.conditional:
+            return self.startPosition*exp(-self.lambda_1*t) + self.lambda_1/self.lambda_0*(1-exp(-self.lambda_1*t))
+        else:
+            pass
     def _get_variance_at(self,t):
-        pass
+        if not self.conditional:
+            s = 1-exp(-self.lambda_1)
+            return self.startPosition*self.nu**2/self.lambda_1*(1-s)*s + self.lambda_0*self.nu**2/(2*self.lambda_1**2)*s**2
+        else:
+            pass
 
 class CEV_process(Diffusion_process):
     """
@@ -943,11 +954,11 @@ class CEV_process(Diffusion_process):
         self.SqB = SqBessel_process({"lambda0":(2-1/self.beta), "nu":2}, time_space_constraints)
         
     def _process2latex(self):
-        return 
-        """
-        $dCEV_t = %.3fCEVdt + %.3fCEV^{\%.3f + 1}dB_t$
-        """%(self.r, self.delta, self.beta)
-        
+		return 
+		"""
+		$dCEV_t = %.3fCEVdt + %.3fCEV^{\%.3f + 1}dB_t$
+		"""%(self.r, self.delta, self.beta)
+		
     def _time_transform(self,t):
         if self.r*self.beta==0:
             return t
@@ -1007,11 +1018,11 @@ class Periodic_drift_process(Diffusion_process):
         self.Nor = stats.norm
         self.Uni = stats.uniform()
 
-    def _process2latex(self):
-        return """
-        $dX_t = %.3f*sin(X_t + %.3f)dt + dB_t$
-        """%(self.psi, self.theta)
-    
+	def _process2latex(self):
+		return """
+		$dX_t = %.3f*sin(X_t + %.3f)dt + dB_t$
+		"""%(self.psi, self.theta)
+	
     
 
     def __generate_sample_path(self,T,x):
@@ -1091,6 +1102,9 @@ class Periodic_drift_process(Diffusion_process):
             self.BB.startTime = tao
         return path
         
+    def _generate_position_at(self,t):
+        return self.generate_sample_path([t])[0][1]
+    
     
     def _findBounds(self):
         if self.psi<=.5:
@@ -1124,11 +1138,11 @@ class GBM_process(Diffusion_process):
             wienerConstraints = {"startTime":self.startTime, "startPosition":0}
         self.Weiner = Wiener_process({"mu":(self.mu-0.5*self.sigma**2), "sigma":self.sigma}, wienerConstraints)
         
-    def _process2latex(self):
-        return """
-        $dGBM_t = %.3f GBM_t dt + %.3f GBM_t dB_t$
-        """
-    
+	def _process2latex(self):
+		return """
+		$dGBM_t = %.3f GBM_t dt + %.3f GBM_t dB_t$
+		"""
+	
     def _get_mean_at(self,t):
         if not self.conditional:
             return self.startPosition*exp(self.mu*t)
@@ -1312,7 +1326,7 @@ class Gamma_process(Jump_Diffusion_process):
         
     def _generate_position_at(self,t):
         if not self.conditional:
-            return self.startPosition + self.gamma.rvs(self.mean**2*(t-self.startTime)/self.variance)*self.mean/self.variance
+            return self.startPosition + self.gamma.rvs(self.mean**2*(t-self.startTime)/self.variance)*self.variance/self.mean
         else:
             return self.startPosition + (self.endPosition-self.startPosition)*self.beta.rvs((t-self.startTime)/self.variance, (self.endTime-t)/self.variance)
             
@@ -1367,7 +1381,7 @@ class Gamma_process(Jump_Diffusion_process):
     
     def _transition_pdf(self,x,t,y):
         return self.variance/self.mean*self.gamma.pdf((y-x)*self.mean/self.variance*t,self.mean**2/self.variance)
-    
+       
     
 class Gamma_variance_process(Jump_Diffusion_process):
     """
@@ -1411,9 +1425,9 @@ class Gamma_variance_process(Jump_Diffusion_process):
         return self.GamPos.get_variance_at(t)+self.GamNeg.get_variance_at(t)
         
     def _generate_position_at(self,t):
-        x = self.GamPos.generate_position_at(t)
-        y = self.GamNeg.generate_position_at(t)
-        return x-y
+		x = self.GamPos.generate_position_at(t)
+		y = self.GamNeg.generate_position_at(t)
+		return x-y
 
     def _generate_sample_path(self,times):
         path=[]
@@ -1465,7 +1479,6 @@ class Geometric_gamma_process(Jump_Diffusion_process):
                 if self.sigma<self.mu: #this condition gauruntees the expectation exists
                     return self.startPosition*(1-self.sigma/self.mu)**(-self.mu**2*(t-self.startTime)/self.sigma)
                 else:
-                    print "Attn: does not exist."
                     return "DNE"
         
         def _generate_sample_path(self,times):
