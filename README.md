@@ -2,7 +2,6 @@ PyProcess
 ==========
 
 PyProcess is a Python class library used to exactly simulate stochastic processes, and their properties.
----------------------------------------------------------------------------------------------------------
 
 Using this library, you can simulate the following random processes:
 
