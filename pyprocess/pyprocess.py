@@ -1,13 +1,7 @@
-'''
-Created on 2011-07-29
-
-@author: Cameron Davidson-Pilon
-Feel free to use this under the MIT license. 
-'''
-
 
 """
-The second iteration of stochastic processes.
+PyProcess
+@author: Cameron Davidson-Pilon
 """
 
 import scipy.stats as stats
