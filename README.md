@@ -39,7 +39,7 @@ Step Processes
 Simulation Algorithms + PyProcess 0.2
 -------------------------------------
 
-See the report for [PyProcess 0.2's background.](http://www.camdp.com/mediaFiles/PDF/PyProcess.pdf)
+See the report for [PyProcess 0.2's background.](http://www.camdp.com/mediaFiles/PDFs/PyProcess.pdf)
 
 
 
