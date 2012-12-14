@@ -1,6 +1,6 @@
 
-PyProcess
-==========
+PyProcess 0.2
+=============
 
 PyProcess is a Python class library used to exactly simulate stochastic processes, and their properties.
 
@@ -34,6 +34,13 @@ Step Processes
 
 
 *See fun examples of the processes you can simulate [here] (http://pyprocess.70percentfatfree.com)*
+
+
+Simulation Algorithms + PyProcess 0.2
+-------------------------------------
+
+See the report for [PyProcess 0.2's background.](http://www.camdp.com/mediaFiles/PDF/PyProcess.pdf)
+
 
 
 Lastly
