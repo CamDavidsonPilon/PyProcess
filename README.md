@@ -45,6 +45,6 @@ See the report for [PyProcess 0.2's background.](http://www.camdp.com/mediaFiles
 
 Lastly
 -----------------
-email me at cam.davidson.pilon@gmail.com and visit me at [camdp.com](http://www.camdp.com) and follow me at [cmrn_dp](http://twitter/cmrn_dp)
+email me at cam.davidson.pilon@gmail.com and visit me at [camdp.com](http://www.camdp.com) and follow me at [cmrn_dp](http://twitter.com/cmrn_dp)
             
         
