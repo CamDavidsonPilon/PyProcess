@@ -749,11 +749,12 @@ class Wiener_process(Diffusion_process):
             T = self.endTime - self.startTime
             x = self.startTime
             for i, delta in enumerate( deltas ):
-                x = x*(1-delta/T)+self.endPosition*delta/T + self.sigma*np.sqrt(delta/T*(T-delta))*self.Nor.rvs(N)
+                x = x*(1-delta/T)+(self.endPosition - self.startPosition)*delta/T + self.sigma*np.sqrt(delta/T*(T-delta))*self.Nor.rvs(N)
                 T = T - delta
                 path[:,i] = x
             if abs(T -0)<1e-10:
-                path[:,-1] = self.endPosition 
+                path[:,-1] = (self.endPosition - self.startPosition)
+            path = path + self.startPosition
         return path
     
     def generate_max(self,t):
